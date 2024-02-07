@@ -17,5 +17,5 @@ func main() {
 	dbs := database.Connect(bsr)
 	routes.RegisterBridgeRoutes(dbs, app)
 
-	log.Fatalln(app.Listen(":8090"))
+	log.Fatalln(app.Listen(":8070"))
 }
