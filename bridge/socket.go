@@ -33,12 +33,22 @@ func ListenAndForward(host string, selfChannel chan models.Message, sourceChatId
 		return
 	}
 	log.Println("CONNECTION OPENED AT:", URL.String())
+	var counter = 0
 	go func() {
 		for msg := range selfChannel {
 			err := conn.WriteJSON(msg)
 			if err != nil {
 				log.Println("ERROR WRITING MESSAGE TO CHANNEL", sourceChatId, err)
-				return
+				if counter > 3 {
+					break
+				}
+				conn, _, err = websocket.DefaultDialer.Dial(URL.String(), header)
+				if err != nil {
+					exit <- true
+					break
+				}
+				counter++
+				continue
 			}
 		}
 	}()
@@ -48,7 +58,16 @@ func ListenAndForward(host string, selfChannel chan models.Message, sourceChatId
 			err := conn.ReadJSON(&msg)
 			if err != nil {
 				log.Println("ERROR READING MESSAGE FROM CHANNEL", sourceChatId, err)
-				return
+				if counter > 3 {
+					break
+				}
+				conn, _, err = websocket.DefaultDialer.Dial(URL.String(), header)
+				if err != nil {
+					exit <- true
+					break
+				}
+				counter++
+				continue
 			}
 			msg.ChatId = targetChatID
 			targetChannel <- msg

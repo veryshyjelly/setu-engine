@@ -15,3 +15,13 @@ func GetBridge(service database.Service) func(c *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"toChatIDs": toChatIDs})
 	}
 }
+
+func GetAllBridges(service database.Service) func(c *fiber.Ctx) error {
+	return func(ctx *fiber.Ctx) error {
+		bridges, err := service.GetAllBridges()
+		if err != nil {
+			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		}
+		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"bridges": bridges})
+	}
+}
