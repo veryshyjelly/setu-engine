@@ -43,7 +43,7 @@ func (s *service) subscriber() {
 	for c := range s.subscribe {
 		s.Subscribers[c] = make(chan bool)
 		log.Println("NEW BRIDGE SUBSCRIPTION:", c)
-		StartSocket(c, s.Subscribers[c])
+		go StartSocket(c, s.Subscribers[c])
 	}
 }
 
