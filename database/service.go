@@ -97,7 +97,7 @@ func (s *service) DeleteBridge(firstChatId string, secondChatId string) error {
 
 func (s *service) GetBridge(fromChatID string) ([]models.Bridge, error) {
 	var bridges []models.Bridge
-	s.db.Where("from_chat_id = ? or second_chat_id = ?", fromChatID, fromChatID).Find(&bridges)
+	s.db.Where("first_chat_id = ? or second_chat_id = ?", fromChatID, fromChatID).Find(&bridges)
 	return bridges, nil
 }
 
